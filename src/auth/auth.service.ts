@@ -1,12 +1,24 @@
+import { AuthDto } from 'src/dto';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { User, BookMark } from '@prisma/client';
+import * as argon from 'argon2';
 @Injectable()
 export class AuthService {
-  constructor(private prima: PrismaService) {}
-  signUp() {
-    return 'I am signup';
+  constructor(private prisma: PrismaService) {}
+  async signUp(dto: AuthDto) {
+    const hash = await argon.hash(dto.password);
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        hash
+      },
+      select: {
+        id:true,
+        email: true,
+        createdAt: true
+      }
+    })
+    return user;
   }
   signIn() {
     return 'I am signin';
