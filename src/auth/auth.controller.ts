@@ -11,7 +11,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  getSignInData() {
-    return this.auth.signIn();
+  getSignInData(@Body() dto: AuthDto) {
+    return this.auth.signIn(dto);
   }
 }
